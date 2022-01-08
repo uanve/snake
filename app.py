@@ -4,8 +4,10 @@ from PIL import Image, ImageTk
 
 
 MOVE_INCREMENT = 20
-MOVES_PER_SECOND = 2
+MOVES_PER_SECOND = 1000
 GAME_SPEED = 1000 // MOVES_PER_SECOND
+
+moves = ['Down','Right', 'Down','Right', 'Down','Right']
 
 
 class Snake(tk.Canvas):
@@ -17,6 +19,7 @@ class Snake(tk.Canvas):
         self.snake_positions = [(100, 100), (80, 100), (60, 100)]
         self.food_position = self.set_new_food_position()
         self.direction = "Right"
+        self.i = 0
 
         self.score = 0
 
@@ -52,6 +55,7 @@ class Snake(tk.Canvas):
 
         self.create_image(*self.food_position, image=self.food, tag="food")
         self.create_rectangle(7, 27, 593, 613, outline="#525d69")
+
 
     def check_collisions(self):
         head_x_position, head_y_position = self.snake_positions[0]
@@ -130,10 +134,40 @@ class Snake(tk.Canvas):
         ):
             self.direction = new_direction
 
+    def next_move(self):
+        # new_direction = moves[self.i]
+        # self.i+=1
+        # self.direction = new_direction
+
+        head_x_position, head_y_position = self.snake_positions[0]
+
+        if (head_x_position,head_y_position) == (580,580):
+            self.direction = 'Up'
+        
+        elif (head_x_position,head_y_position) == (580,40):
+            self.direction = 'Left'
+
+        elif (self.direction == 'Left') and head_x_position == 20:
+            self.direction = 'Down'
+        
+        elif (self.direction == 'Down') and head_x_position == 20:
+            self.direction = 'Right'
+
+        elif 60 <= head_y_position <=560: 
+            if (self.direction == 'Right') and head_x_position == 560:
+                self.direction = 'Down'
+            
+            elif (self.direction == 'Down') and head_x_position == 560:
+                self.direction = 'Left'
+
+        
+
+
     def perform_actions(self):
         if self.check_collisions():
             self.end_game()
 
+        self.next_move()
         self.check_food_collision()
         self.move_snake()
 
@@ -142,11 +176,12 @@ class Snake(tk.Canvas):
     def set_new_food_position(self):
         while True:
             x_position = randint(1, 29) * MOVE_INCREMENT
-            y_position = randint(3, 30) * MOVE_INCREMENT
+            y_position = randint(3, 29) * MOVE_INCREMENT
             food_position = (x_position, y_position)
 
             if food_position not in self.snake_positions:
                 return food_position
+
 
 
 root = tk.Tk()
