@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 
 
 MOVE_INCREMENT = 20
-MOVES_PER_SECOND = 15
+MOVES_PER_SECOND = 2
 GAME_SPEED = 1000 // MOVES_PER_SECOND
 
 
@@ -57,9 +57,10 @@ class Snake(tk.Canvas):
         head_x_position, head_y_position = self.snake_positions[0]
 
         return (
-            head_x_position in (0, 600)
-            or head_y_position in (20, 620)
-            or (head_x_position, head_y_position) in self.snake_positions[1:]
+            # head_x_position in (0, 600)
+            # or head_y_position in (20, 620)
+            # or 
+            (head_x_position, head_y_position) in self.snake_positions[1:]
         )
 
     def check_food_collision(self):
@@ -90,13 +91,27 @@ class Snake(tk.Canvas):
         head_x_position, head_y_position = self.snake_positions[0]
 
         if self.direction == "Left":
-            new_head_position = (head_x_position - MOVE_INCREMENT, head_y_position)
+            if head_x_position == 20:
+                new_head_position = (580, head_y_position)
+            else:
+                new_head_position = (head_x_position - MOVE_INCREMENT, head_y_position)
+
         elif self.direction == "Right":
-            new_head_position = (head_x_position + MOVE_INCREMENT, head_y_position)
+            if head_x_position == 580:
+                new_head_position = (20, head_y_position)
+            else:
+                new_head_position = (head_x_position + MOVE_INCREMENT, head_y_position)
+
         elif self.direction == "Down":
-            new_head_position = (head_x_position, head_y_position + MOVE_INCREMENT)
+            if head_y_position==600:
+                new_head_position = (head_x_position, 40)
+            else:
+                new_head_position = (head_x_position, head_y_position + MOVE_INCREMENT)
         elif self.direction == "Up":
-            new_head_position = (head_x_position, head_y_position - MOVE_INCREMENT)
+            if head_y_position == 40:
+                new_head_position = (head_x_position, 600)
+            else:
+                new_head_position = (head_x_position, head_y_position - MOVE_INCREMENT)
 
         self.snake_positions = [new_head_position] + self.snake_positions[:-1]
 
